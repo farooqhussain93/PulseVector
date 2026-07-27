@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="PulseVector is an educational FastAPI and machine-learning heart disease classification project.">
+    <meta name="theme-color" content="#0B2230">
+    <title>{% block title %}PulseVector{% endblock %} | ML Classification</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', path='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}?v=final-ui">
+    <script src="{{ url_for('static', path='js/plotly.min.js') }}"></script>
+    <script defer src="{{ url_for('static', path='js/main.js') }}"></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header">
+    <div class="shell nav-shell navbar-inner">
+        <div class="brand-area">
+            <a class="brand" href="/" aria-label="PulseVector dashboard">
+                <img src="{{ url_for('static', path='favicon.svg') }}" alt="" class="brand-icon" aria-hidden="true">
+                <span class="brand-copy"><strong>PulseVector</strong><small>Classification Engine</small></span>
+            </a>
+        </div>
+        <nav id="primary-navigation" class="primary-nav desktop-navigation" aria-label="Primary navigation">
+            <a href="/" {% if page == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+            <a href="/dataset" {% if page == 'dataset' %}aria-current="page"{% endif %}>Dataset</a>
+            <a href="/eda" {% if page == 'eda' %}aria-current="page"{% endif %}>EDA</a>
+            <a href="/models" {% if page == 'models' %}aria-current="page"{% endif %}>Models</a>
+            <a href="/predict" {% if page == 'predict' %}aria-current="page"{% endif %}>Predict</a>
+            <a href="/about" {% if page == 'about' %}aria-current="page"{% endif %}>About</a>
+        </nav>
+        <div class="navbar-actions">
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+                <span class="sr-only">Toggle navigation</span>
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+</header>
+<main id="main-content">
+    {% block content %}{% endblock %}
+</main>
+<footer class="site-footer">
+    <div class="shell footer-grid">
+        <div>
+            <div class="footer-brand">PulseVector</div>
+            <p>FastAPI, scikit-learn, Jinja2, Plotly, Pytest, and reproducible ML engineering.</p>
+        </div>
+        <div class="footer-note">
+            <strong>Educational use only</strong>
+            <p>{{ disclaimer }}</p>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="shell hero-grid">
+        <div class="hero-copy">
+            <span class="eyebrow">FastAPI + ML Portfolio System</span>
+            <h1>Classification engineering, made transparent.</h1>
+            <p>PulseVector compares five supervised-learning classifiers on one approved dataset, selects the winner using stratified cross-validation, and serves validated predictions through a production-style FastAPI application.</p>
+            <div class="hero-actions">
+                <a class="button button-primary" href="/predict">Try a prediction</a>
+                <a class="button button-secondary" href="/models">Review model evidence</a>
+            </div>
+            <div class="method-strip" aria-label="Method summary">
+                <span>5 models</span><span>5-fold CV</span><span>Held-out test</span><span>90%+ test target</span>
+            </div>
+        </div>
+        <aside class="hero-panel" aria-label="Application readiness">
+            <div class="status-row">
+                <span class="status-dot {% if is_ready %}is-ready{% else %}is-not-ready{% endif %}" aria-hidden="true"></span>
+                <div>
+                    <span class="status-label">Service status</span>
+                    <strong>{% if is_ready %}Prediction ready{% else %}Artifacts unavailable{% endif %}</strong>
+                </div>
+            </div>
+            <dl class="readiness-list">
+                {% for key, value in readiness.checks.items() %}
+                <div><dt>{{ key | replace('_', ' ') | title }}</dt><dd>{{ 'Verified' if value else 'Unavailable' }}</dd></div>
+                {% endfor %}
+            </dl>
+            <a href="/ready" class="text-link">Inspect readiness endpoint →</a>
+        </aside>
+    </div>
+</section>
+
+<section class="section shell">
+    {% if report_errors %}
+    <div class="alert alert-error" role="alert"><strong>Report status:</strong> {{ report_errors | join(' ') }}</div>
+    {% endif %}
+    <div class="section-heading">
+        <div><span class="eyebrow">Verified outputs</span><h2>System at a glance</h2></div>
+        <p>Dashboard values are read from generated artifacts, not hard-coded marketing numbers.</p>
+    </div>
+    <div class="metric-grid">
+        <article class="metric-card"><span>Dataset rows</span><strong>{{ dataset.rows if dataset else '—' }}</strong><small>Processed Cleveland records</small></article>
+        <article class="metric-card"><span>Selected model</span><strong class="metric-name">{{ metrics.selection.winner_name if metrics else 'Unavailable' }}</strong><small>Chosen from CV results only</small></article>
+        <article class="metric-card"><span>Held-out F1</span><strong>{% if metrics %}{{ '%.1f'|format(metrics.held_out_test_metrics.f1 * 100) }}%{% else %}—{% endif %}</strong><small>Positive class = disease present</small></article>
+        <article class="metric-card"><span>Held-out recall</span><strong>{% if metrics %}{{ '%.1f'|format(metrics.held_out_test_metrics.recall * 100) }}%{% else %}—{% endif %}</strong><small>Discussed alongside precision</small></article>
+    </div>
+</section>
+
+<section class="section section-tinted">
+    <div class="shell split-layout">
+        <div>
+            <span class="eyebrow">Class balance</span>
+            <h2>Balanced enough to measure honestly.</h2>
+            <p>The binary target is derived explicitly: original target value 0 remains negative, while values 1-4 map to the positive class. Resampling is not applied blindly.</p>
+            {% if dataset %}
+            <div class="inline-stats">
+                <div><strong>{{ dataset.binary_target_distribution['0'] }}</strong><span>Not detected</span></div>
+                <div><strong>{{ dataset.binary_target_distribution['1'] }}</strong><span>Present</span></div>
+                <div><strong>{{ dataset.total_missing_values }}</strong><span>Missing values</span></div>
+            </div>
+            {% endif %}
+        </div>
+        <div>
+            {% if dataset %}<p id="dashboard-class-summary" class="sr-only">Class distribution summary: {{ dataset.binary_target_distribution['0'] }} records are labelled heart disease not detected and {{ dataset.binary_target_distribution['1'] }} records are labelled heart disease present. The dataset contains {{ dataset.total_missing_values }} missing values handled inside training pipelines.</p>{% endif %}
+            <div class="chart-card chart-short"{% if dataset %} aria-describedby="dashboard-class-summary"{% endif %}>
+                {% if class_chart %}{{ class_chart | safe }}{% else %}<div class="empty-state">Class chart unavailable.</div>{% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section shell">
+    <div class="section-heading">
+        <div><span class="eyebrow">Engineering workflow</span><h2>Built beyond a notebook.</h2></div>
+    </div>
+    <div class="feature-grid">
+        <article class="feature-card"><span class="feature-index">01</span><h3>Leakage-safe pipelines</h3><p>Imputation, encoding, and model-appropriate scaling remain inside scikit-learn Pipelines.</p></article>
+        <article class="feature-card"><span class="feature-index">02</span><h3>Defensible selection</h3><p>Shared stratified folds, CV F1 selection, recall and accuracy tie-breakers, and isolated test evaluation.</p></article>
+        <article class="feature-card"><span class="feature-index">03</span><h3>Operational honesty</h3><p>Liveness and readiness are separate. Missing models or malformed metrics produce controlled 503 responses.</p></article>
+    </div>
+</section>
+{% endblock %}

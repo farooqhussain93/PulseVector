@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Dataset{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="shell"><span class="eyebrow">Dataset audit</span><h1>One approved source. One explicit target.</h1><p>The project uses the UCI Heart Disease Processed Cleveland data and preserves its original target before creating a documented binary mapping.</p></div></section>
+<section class="section shell">
+    {% if report_errors %}<div class="alert alert-error" role="alert">{{ report_errors | join(' ') }}</div>{% endif %}
+    <div class="metric-grid metric-grid-three">
+        <article class="metric-card"><span>Rows</span><strong>{{ dataset.rows if dataset else '—' }}</strong><small>Patient records</small></article>
+        <article class="metric-card"><span>Features</span><strong>{{ dataset.feature_count if dataset else '—' }}</strong><small>Model inputs</small></article>
+        <article class="metric-card"><span>Missing</span><strong>{{ dataset.total_missing_values if dataset else '—' }}</strong><small>Handled inside pipelines</small></article>
+    </div>
+    <div class="content-grid">
+        <article class="panel">
+            <span class="eyebrow">Target mapping</span><h2>Binary classification contract</h2>
+            <div class="mapping-row"><span class="mapping-badge mapping-negative">0</span><div><strong>Heart disease not detected</strong><p>Original UCI target value equals 0.</p></div></div>
+            <div class="mapping-row"><span class="mapping-badge mapping-positive">1</span><div><strong>Heart disease present</strong><p>Original UCI target values 1, 2, 3, or 4.</p></div></div>
+        </article>
+        <article class="panel">
+            <span class="eyebrow">Data quality</span><h2>Audit summary</h2>
+            {% if dataset %}
+            <dl class="detail-list">
+                <div><dt>Duplicate rows</dt><dd>{{ dataset.duplicate_rows }}</dd></div>
+                <div><dt>Missing columns</dt><dd>{{ dataset.missing_values.keys() | join(', ') }}</dd></div>
+                <div><dt>Dataset license</dt><dd>CC BY 4.0</dd></div>
+                <div><dt>Identifier column</dt><dd>None used</dd></div>
+            </dl>
+            {% endif %}
+        </article>
+    </div>
+</section>
+<section class="section section-tinted"><div class="shell"><div class="section-heading"><div><span class="eyebrow">Feature schema</span><h2>Inputs used by every candidate.</h2></div><p>All five models receive the same feature contract and the same split rows.</p></div>
+<div class="table-wrap"><table><thead><tr><th scope="col">Feature</th><th scope="col">Description</th><th scope="col">Type</th></tr></thead><tbody>{% for feature in feature_descriptions %}<tr><td><code>{{ feature.name }}</code></td><td>{{ feature.description }}</td><td>{{ feature.type }}</td></tr>{% endfor %}</tbody></table></div></div></section>
+<section class="section shell">{% if dataset %}<p id="dataset-class-summary" class="sr-only">Class distribution summary: {{ dataset.binary_target_distribution['0'] }} records belong to class 0, heart disease not detected, and {{ dataset.binary_target_distribution['1'] }} records belong to class 1, heart disease present.</p>{% endif %}<div class="chart-card"{% if dataset %} aria-describedby="dataset-class-summary"{% endif %}>{% if class_chart %}{{ class_chart | safe }}{% else %}<div class="empty-state">Class distribution chart unavailable.</div>{% endif %}</div></section>
+{% endblock %}

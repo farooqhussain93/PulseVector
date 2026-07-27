@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Predict{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="shell"><span class="eyebrow">Validated prediction</span><h1>Explore the model with structured inputs.</h1><p>Every field is validated before it reaches the saved pipeline. This demonstration is educational and must not be used for medical decisions.</p></div></section>
+<section class="section shell predict-layout">
+    <div class="form-panel">
+        <div class="panel-heading"><div><span class="eyebrow">Patient feature form</span><h2>Enter the 13 model inputs</h2></div><span class="required-note">All fields required</span></div>
+        {% if errors %}<div class="alert alert-error" role="alert"><strong>Check the submitted values.</strong><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+        <form action="/prediction/" method="post" class="prediction-form" novalidate>
+            <fieldset><legend>Basic profile</legend><div class="form-grid">
+                <label><span>Age <small>18-100 years</small></span><input name="age" type="number" min="18" max="100" step="1" value="{{ form_values.get('age', 54) }}" required></label>
+                <label><span>Sex</span><select name="sex" required>{% for value, label in form_options.sex %}<option value="{{ value }}" {% if form_values.get('sex', '1')|string == value|string %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+            </div></fieldset>
+            <fieldset><legend>Symptoms and baseline measures</legend><div class="form-grid">
+                <label><span>Chest pain type</span><select name="cp" required>{% for value, label in form_options.cp %}<option value="{{ value }}" {% if form_values.get('cp', '4')|string == value|string %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+                <label><span>Resting blood pressure <small>mm Hg</small></span><input name="trestbps" type="number" min="70" max="250" step="1" value="{{ form_values.get('trestbps', 130) }}" required></label>
+                <label><span>Serum cholesterol <small>mg/dl</small></span><input name="chol" type="number" min="100" max="700" step="1" value="{{ form_values.get('chol', 246) }}" required></label>
+                <label><span>Fasting blood sugar &gt; 120 mg/dl</span><select name="fbs" required>{% for value, label in form_options.fbs %}<option value="{{ value }}" {% if form_values.get('fbs', '0')|string == value|string %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+                <label><span>Resting ECG</span><select name="restecg" required>{% for value, label in form_options.restecg %}<option value="{{ value }}" {% if form_values.get('restecg', '0')|string == value|string %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+                <label><span>Maximum heart rate</span><input name="thalach" type="number" min="60" max="230" step="1" value="{{ form_values.get('thalach', 150) }}" required></label>
+            </div></fieldset>
+            <fieldset><legend>Exercise and imaging categories</legend><div class="form-grid">
+                <label><span>Exercise-induced angina</span><select name="exang" required>{% for value, label in form_options.exang %}<option value="{{ value }}" {% if form_values.get('exang', '0')|string == value|string %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+                <label><span>Oldpeak <small>ST depression</small></span><input name="oldpeak" type="number" min="0" max="10" step="0.1" value="{{ form_values.get('oldpeak', 1.0) }}" required></label>
+                <label><span>ST segment slope</span><select name="slope" required>{% for value, label in form_options.slope %}<option value="{{ value }}" {% if form_values.get('slope', '2')|string == value|string %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+                <label><span>Major vessels</span><select name="ca" required>{% for value, label in form_options.ca %}<option value="{{ value }}" {% if form_values.get('ca', '0')|string == value|string %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+                <label><span>Thal category</span><select name="thal" required>{% for value, label in form_options.thal %}<option value="{{ value }}" {% if form_values.get('thal', '3')|string == value|string %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+            </div></fieldset>
+            <button class="button button-primary button-full" type="submit">Run educational prediction</button>
+        </form>
+    </div>
+    <aside class="result-panel" aria-live="polite">
+        {% if result %}
+        <span class="eyebrow">Prediction result</span>
+        <div class="result-class result-class-{{ result.predicted_class }}"><span>Class {{ result.predicted_class }}</span><h2>{{ result.label }}</h2></div>
+        {% if result.positive_class_probability is not none %}<div class="probability-block"><div><span>Positive-class probability</span><strong>{{ '%.1f'|format(result.positive_class_probability * 100) }}%</strong></div><div class="probability-track" role="img" aria-label="Positive class probability {{ '%.1f'|format(result.positive_class_probability * 100) }} percent"><span style="width: {{ result.positive_class_probability * 100 }}%"></span></div><small>{{ result.probability_label }}</small></div>{% endif %}
+        <dl class="detail-list result-details"><div><dt>Winning model</dt><dd>{{ result.winning_model }}</dd></div><div><dt>Verified test F1</dt><dd>{{ '%.1f'|format(result.evaluation_metrics.f1 * 100) }}%</dd></div><div><dt>Verified test recall</dt><dd>{{ '%.1f'|format(result.evaluation_metrics.recall * 100) }}%</dd></div></dl>
+        <div class="alert alert-warning"><strong>Important:</strong> {{ result.disclaimer }}</div>
+        {% else %}
+        <div class="result-placeholder"><span class="pulse-icon" aria-hidden="true">⌁</span><h2>Your result will appear here.</h2><p>Submit validated values to view the predicted class, model-estimated probability, selected model, and verified evaluation metrics.</p><ul><li>No clinical interpretation</li><li>No fake fallback values</li><li>Controlled unavailable states</li></ul></div>
+        {% endif %}
+    </aside>
+</section>
+{% endblock %}
