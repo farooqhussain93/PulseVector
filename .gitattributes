@@ -1,1 +1,4 @@
+templates/** linguist-vendored
+static/css/** linguist-vendored
+static/js/** linguist-vendored
 notebooks/** linguist-documentation=true
