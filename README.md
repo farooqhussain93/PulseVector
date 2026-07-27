@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  A reproducible binary-classification platform that compares five machine-learning pipelines, selects the winner using training-only cross-validation, independently verifies held-out metrics, and serves validated predictions through FastAPI and Jinja2.
+  A reproducible binary-classification platform that compares five machine-learning pipelines, selects the winner using training-only cross-validation, independently verifies held-out metrics and serves validated predictions through FastAPI and Jinja2.
 </p>
 
 <p align="center">
@@ -21,7 +21,7 @@
   <img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License">
 </p>
 
-> **Educational disclaimer:** PulseVector is an educational machine-learning demonstration and is not a medical diagnostic tool. It must not be used for diagnosis, treatment, clinical decision-making, or emergency guidance.
+> **Educational disclaimer:** PulseVector is an educational machine-learning demonstration and is not a medical diagnostic tool. It must not be used for diagnosis, treatment, clinical decision-making or emergency guidance.
 
 ---
 
@@ -53,7 +53,7 @@ Additional screens are available in the [`screenshots/`](screenshots/) directory
 
 ## Project Overview
 
-PulseVector transforms a supervised binary-classification model into a complete, reproducible machine-learning system. The project covers dataset inspection, leakage-safe preprocessing, five-model comparison, cross-validation-based winner selection, held-out evaluation, artifact verification, FastAPI serving, automated testing, CI configuration, responsive UI, and deployment readiness.
+PulseVector transforms a supervised binary-classification model into a complete, reproducible machine-learning system. The project covers dataset inspection, leakage-safe preprocessing, five-model comparison, cross-validation-based winner selection, held-out evaluation, artifact verification, FastAPI serving, automated testing, CI configuration, responsive UI and deployment readiness.
 
 One approved dataset, one target mapping, one stratified train/test split, and the same materialized five-fold `StratifiedKFold` splits are used across all candidate models.
 
@@ -88,7 +88,7 @@ The held-out test set is never used to select the winning model.
 - CV-only winner selection with held-out test-set isolation
 - Independently verifiable saved test predictions
 - Saved candidate pipelines and `best_model.joblib`
-- Accuracy, precision, recall, F1, specificity, ROC-AUC, and confusion matrices
+- Accuracy, precision, recall, F1, specificity, ROC-AUC and confusion matrices
 - Interactive Plotly EDA and model-evaluation reports
 - FastAPI JSON and HTML prediction endpoints
 - Strict Pydantic validation with unknown-field rejection
@@ -186,14 +186,6 @@ The project is educational and has not been clinically validated.
 - Containerized deployment where required
 - Production observability and structured logging
 - Real-world validation under an appropriate clinical and regulatory framework
-
----
-
-## Documentation
-
-- [Technical Documentation](docs/PulseVector_Documentation.docx)
-- [Project Preview PDF](docs/Pulse%20Vector%20-%20Preview.pdf)
-- [All Project Screenshots](screenshots/)
 
 ---
 
